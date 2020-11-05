@@ -10,7 +10,6 @@ const RoomName = () => {
   const [list, setList] = useState<Message[]>([]);
   const router = useRouter();
   const [form] = Form.useForm();
-  const { roomName } = router.query;
   const postMessage = async (body: string) => {
     form.resetFields();
     if (typeof roomName === 'string') {
@@ -20,8 +19,16 @@ const RoomName = () => {
       });
     }
   };
+  const [roomName, setRoomName] = useState<string>();
   useEffect(() => {
-    if (typeof roomName === 'string') {
+    // idがqueryで利用可能になったら処理される
+    if (router.asPath !== router.route) {
+      setRoomName(String(router.query.roomName));
+    }
+  }, [router]);
+  useEffect(() => {
+    console.log('useEffect', roomName ?? undefined);
+    if (roomName) {
       db.collection(roomName).onSnapshot((collection) => {
         const messages = collection.docs.map<Message>((doc) => ({
           body: doc.data().body,
@@ -33,7 +40,7 @@ const RoomName = () => {
         setList(sortedMessages);
       });
     }
-  }, []);
+  }, [roomName]);
 
   return (
     <>
