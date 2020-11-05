@@ -1,23 +1,39 @@
-import React from 'react';
-import { Input, Button, Form } from 'antd';
-import Router from 'next/router';
+import React, { useEffect, useState } from 'react';
+import MessageList from '@/components/organisms/MessageList';
+import { useRouter } from 'next/router';
+import { db } from '@/lib/firestore';
+import { Message } from '@/components/organisms/MessageList';
+import { isAfter } from 'date-fns';
+import MarkDownEditor from '@/components/molecules/MarkDownEditor';
 
 const Index = () => {
-  const inputRef = React.createRef();
-  const onEnterButtonClick = (roomName: string) => {
-    Router.push(`/chatroom/${roomName}`);
+  const [list, setList] = useState<Message[]>([]);
+  const router = useRouter();
+  const collection = 'chat';
+  const postMessage = async (body: string) => {
+    await db.collection(collection).add({
+      body: body,
+      createdAt: new Date(),
+    });
   };
+  useEffect(() => {
+    db.collection(collection).onSnapshot((collection) => {
+      const messages = collection.docs.map<Message>((doc) => ({
+        body: doc.data().body,
+        createdAt: doc.data().createdAt.toDate(),
+      }));
+      const sortedMessages = messages.sort((a, b) =>
+        isAfter(a.createdAt, b.createdAt) ? 1 : -1
+      );
+      setList(sortedMessages);
+    });
+  }, []);
+
   return (
     <>
-      <h2>Firebase Chat</h2>
-      <Form onFinish={({ roomName }) => onEnterButtonClick(roomName)}>
-        <Form.Item name={'roomName'}>
-          <Input placeholder={'room name'}></Input>
-        </Form.Item>
-        <Button type={'primary'} htmlType={'submit'}>
-          enter
-        </Button>
-      </Form>
+      <h2>{collection}</h2>
+      <MessageList message={list} />
+      <MarkDownEditor onSave={postMessage} />
     </>
   );
 };
