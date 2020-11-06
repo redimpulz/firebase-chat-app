@@ -7,20 +7,11 @@ import MessageList from '@/components/organisms/MessageList';
 import { Message } from '@/components/organisms/MessageList';
 import MarkDownEditor from '@/components/molecules/MarkDownEditor';
 
-const collection = 'chat';
-
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const postMessage = async (body: string) => {
-    await db.collection(collection).add({
-      body: body,
-      createdAt: new Date(),
-    });
-  };
-
   useEffect(() => {
-    db.collection(collection).onSnapshot((collection) => {
+    db.collection('chat').onSnapshot((collection) => {
       const data = collection.docs.map<Message>((doc) => ({
         body: doc.data().body,
         createdAt: doc.data().createdAt.toDate(),
@@ -36,9 +27,9 @@ const Index = () => {
 
   return (
     <>
-      <h2>{collection}</h2>
+      <h2>firebase-chat-web</h2>
       <MessageList messages={messages} />
-      <MarkDownEditor onSave={postMessage} />
+      <MarkDownEditor />
     </>
   );
 };

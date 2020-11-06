@@ -1,59 +1,53 @@
-import React, { useRef } from 'react';
-import SimpleMDE from 'react-simplemde-editor';
-import 'easymde/dist/easymde.min.css';
+import React from 'react';
+import ReactMde from 'react-mde';
+import 'react-mde/lib/styles/css/react-mde-all.css';
+
+import { Button } from 'antd';
+
 import { v4 } from 'uuid';
+import marked from 'marked';
 
-import { storage } from '@/lib/firestore';
+import { db, storage } from '@/lib/firestore';
 
-type Props = {
-  onSave: (markdown: string) => void;
-};
+const MarkDownEditor = () => {
+  const [value, setValue] = React.useState('');
+  const [selectedTab, setSelectedTab] = React.useState<'write' | 'preview'>(
+    'write'
+  );
 
-const MarkDownEditor: React.FC<Props> = ({ onSave }) => {
-  const ref = useRef<SimpleMDE>(null);
+  const postMessage = async (body: string) => {
+    await db.collection('chat').add({
+      body: body,
+      createdAt: new Date(),
+    });
+    setValue('');
+  };
 
-  const toolbar = [
-    {
-      name: 'save',
-      action: (editor: EasyMDE) => {
-        onSave(editor.value());
-        editor.value('');
-      },
-      className: 'fa fa-save',
-      title: 'Save',
-    },
-  ];
-
-  const handleDrop = async (
-    _: unknown,
-    e: React.DragEvent<HTMLInputElement>
-  ) => {
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      const file = files[0];
-      const m = file.name.match(/.+\.([a-z]+)$/);
-      if (m) {
-        const filename = v4();
-        const storageRef = storage.ref().child(`images/${filename}.${m[1]}`);
-        await storageRef.put(file);
-        const filePath = await storageRef.getDownloadURL();
-        const currentText = ref.current?.simpleMde?.value();
-        ref.current?.simpleMde?.value(`${currentText}  \n![](${filePath})`);
-      }
-    }
+  const saveImage = async function* (data: ArrayBuffer) {
+    const filename = v4();
+    const storageRef = storage.ref().child(`images/${filename}`);
+    await storageRef.put(data);
+    const filePath = await storageRef.getDownloadURL();
+    yield filePath;
+    return true;
   };
 
   return (
-    <SimpleMDE
-      ref={ref}
-      value={''}
-      options={{ toolbar: toolbar }}
-      events={{
-        drop: (_: unknown, e: any) => {
-          handleDrop(_, e);
-        },
-      }}
-    />
+    <>
+      <ReactMde
+        value={value}
+        onChange={setValue}
+        selectedTab={selectedTab}
+        onTabChange={setSelectedTab}
+        generateMarkdownPreview={(markdown) =>
+          Promise.resolve(marked(markdown))
+        }
+        paste={{
+          saveImage,
+        }}
+      />
+      <Button onClick={() => postMessage(value)}>post</Button>
+    </>
   );
 };
 
