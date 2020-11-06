@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { formatISO9075 } from 'date-fns';
 import Message from '@/components/molecules/Message';
 
 export type Message = {
@@ -7,35 +6,37 @@ export type Message = {
   createdAt: Date;
 };
 
-const MessageList = ({ message }: { message: Message[] }) => {
+type Props = {
+  messages: Message[];
+};
+
+const MessageList: React.FC<Props> = ({ messages }) => {
   const scrollToEnd = () => {
     const messageList = document.getElementById('message-list');
     if (messageList) {
       messageList.scrollTop = messageList.scrollHeight;
     }
   };
+
   useEffect(() => {
     console.log('add!!');
     scrollToEnd();
-  }, [message]);
+  }, [messages]);
+
   return (
-    <div id={'message-list'}>
-      {message.map((message, index) => {
-        return (
-          <Message
-            date={formatISO9075(message.createdAt)}
-            body={message.body}
-            key={index}
-          />
-        );
-      })}
+    <>
+      <div id={'message-list'}>
+        {messages.map(({ body, createdAt }, i) => (
+          <Message date={createdAt} body={body} key={i} />
+        ))}
+      </div>
       <style jsx>{`
         #message-list {
           height: 50vh;
           overflow: scroll;
         }
       `}</style>
-    </div>
+    </>
   );
 };
 
