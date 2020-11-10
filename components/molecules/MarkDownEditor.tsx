@@ -7,7 +7,7 @@ import { Button } from 'antd';
 import { v4 } from 'uuid';
 import marked from 'marked';
 
-import { db, storage } from '@/lib/firestore';
+import { firestore, storage } from '@/lib/firebase';
 
 const MarkDownEditor = () => {
   const [value, setValue] = React.useState('');
@@ -16,7 +16,7 @@ const MarkDownEditor = () => {
   );
 
   const postMessage = async (body: string) => {
-    await db.collection('chat').add({
+    await firestore.collection('chat').add({
       body: body,
       createdAt: new Date(),
     });

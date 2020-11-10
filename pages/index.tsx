@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { isAfter } from 'date-fns';
 
-import { db } from '@/lib/firestore';
+import { firestore } from '@/lib/firebase';
 
 import MessageList from '@/components/organisms/MessageList';
 import { Message } from '@/components/organisms/MessageList';
@@ -11,7 +11,7 @@ const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
-    db.collection('chat').onSnapshot((collection) => {
+    firestore.collection('chat').onSnapshot((collection) => {
       const data = collection.docs.map<Message>((doc) => ({
         body: doc.data().body,
         createdAt: doc.data().createdAt.toDate(),
