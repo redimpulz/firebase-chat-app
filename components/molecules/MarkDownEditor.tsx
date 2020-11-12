@@ -1,48 +1,54 @@
-import React, { useEffect, useRef, useState } from 'react';
-import SimpleMDE from 'react-simplemde-editor';
-import 'easymde/dist/easymde.min.css';
-import { storage } from '@/lib/firestore';
-import { v4 } from 'uuid';
+import React from 'react';
+import ReactMde from 'react-mde';
+import 'react-mde/lib/styles/css/react-mde-all.css';
 
-const MarkDownEditor = ({ onSave }: { onSave: (markdown: string) => void }) => {
-  const ref = useRef<SimpleMDE>(null);
-  const toolbar = [
-    {
-      name: 'save',
-      action: (editor: EasyMDE) => {
-        onSave(editor.value());
-        editor.value('');
-      },
-      className: 'fa fa-save',
-      title: 'Save',
-    },
-  ];
-  const handleDrop = async (data: any, e: any) => {
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      const file = files[0];
-      const m = file.name.match(/.+\.([a-z]+)$/);
-      const filename = v4();
-      const storageRef = storage.ref().child(`images/${filename}.${m[1]}`);
-      await storageRef.put(file);
-      const filePath = await storageRef.getDownloadURL();
-      const currentText = ref.current?.simpleMde?.value();
-      ref.current?.simpleMde?.value(`${currentText}  \n![](${filePath})`);
-    }
+import { Button } from 'antd';
+
+import { v4 } from 'uuid';
+import marked from 'marked';
+
+import { firestore, storage } from '@/lib/firebase';
+
+const MarkDownEditor = () => {
+  const [value, setValue] = React.useState('');
+  const [selectedTab, setSelectedTab] = React.useState<'write' | 'preview'>(
+    'write'
+  );
+
+  const postMessage = async (body: string) => {
+    await firestore.collection('chat').add({
+      body: body,
+      createdAt: new Date(),
+    });
+    setValue('');
   };
+
+  const saveImage = async function* (data: ArrayBuffer) {
+    const filename = v4();
+    const storageRef = storage.ref().child(`images/${filename}`);
+    await storageRef.put(data);
+    const filePath = await storageRef.getDownloadURL();
+    yield filePath;
+    return true;
+  };
+
   return (
     <>
-      <SimpleMDE
-        ref={ref}
-        value={''}
-        options={{ toolbar: toolbar }}
-        events={{
-          drop: (data: any, e: any) => {
-            handleDrop(data, e);
-          },
+      <ReactMde
+        value={value}
+        onChange={setValue}
+        selectedTab={selectedTab}
+        onTabChange={setSelectedTab}
+        generateMarkdownPreview={(markdown) =>
+          Promise.resolve(marked(markdown))
+        }
+        paste={{
+          saveImage,
         }}
       />
+      <Button onClick={() => postMessage(value)}>post</Button>
     </>
   );
 };
+
 export default MarkDownEditor;

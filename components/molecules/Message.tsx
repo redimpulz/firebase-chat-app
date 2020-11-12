@@ -1,13 +1,21 @@
 import React from 'react';
 import marked from 'marked';
-import { message } from 'antd';
 
-const Message = ({ date, body }: { date: string; body: string }) => {
+import { formatISO9075 } from 'date-fns';
+
+type Props = {
+  date: Date;
+  body: string;
+};
+
+const Message: React.FC<Props> = ({ date, body }) => {
   return (
-    <div className={'message'}>
-      <span className={'date'}>{date}</span>
-      <br />
-      <span dangerouslySetInnerHTML={{ __html: marked(body) }} />
+    <>
+      <div className="message">
+        <span className="date">{formatISO9075(date)}</span>
+        <br />
+        <span dangerouslySetInnerHTML={{ __html: marked(body) }} />
+      </div>
       <style jsx>{`
         .date {
           color: gray;
@@ -19,7 +27,7 @@ const Message = ({ date, body }: { date: string; body: string }) => {
           margin: 5px;
         }
       `}</style>
-    </div>
+    </>
   );
 };
 

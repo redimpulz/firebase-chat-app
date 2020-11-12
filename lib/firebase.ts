@@ -14,5 +14,5 @@ firebase.apps.length
       appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
     });
 
-export const db = firebase.firestore();
+export const firestore = firebase.firestore();
 export const storage = firebase.storage();
