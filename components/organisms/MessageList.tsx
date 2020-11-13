@@ -4,6 +4,7 @@ import Message from '@/components/molecules/Message';
 export type Message = {
   body: string;
   createdAt: Date;
+  userName: string;
 };
 
 type Props = {
@@ -26,8 +27,8 @@ const MessageList: React.FC<Props> = ({ messages }) => {
   return (
     <>
       <div id={'message-list'}>
-        {messages.map(({ body, createdAt }, i) => (
-          <Message date={createdAt} body={body} key={i} />
+        {messages.map(({ body, createdAt, userName }, i) => (
+          <Message date={createdAt} body={body} userName={userName} key={i} />
         ))}
       </div>
       <style jsx>{`

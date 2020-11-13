@@ -7,19 +7,20 @@ import { Button } from 'antd';
 import { v4 } from 'uuid';
 import marked from 'marked';
 
-import { firestore, storage } from '@/lib/firebase';
+import { storage } from '@/lib/firebase';
 
-const MarkDownEditor = () => {
+const MarkDownEditor = ({
+  postAction,
+}: {
+  postAction: (body: string) => void;
+}) => {
   const [value, setValue] = React.useState('');
   const [selectedTab, setSelectedTab] = React.useState<'write' | 'preview'>(
     'write'
   );
 
-  const postMessage = async (body: string) => {
-    await firestore.collection('chat').add({
-      body: body,
-      createdAt: new Date(),
-    });
+  const post = (body: string) => {
+    postAction(body);
     setValue('');
   };
 
@@ -46,7 +47,7 @@ const MarkDownEditor = () => {
           saveImage,
         }}
       />
-      <Button onClick={() => postMessage(value)}>post</Button>
+      <Button onClick={() => post(value)}>post</Button>
     </>
   );
 };
