@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Input } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import { isBefore } from 'date-fns';
 
 import { firestore } from '@/lib/firebase';
 
@@ -27,7 +28,11 @@ const Index = () => {
       createdAt: doc.data().createdAt.toDate(),
       userName: doc.data().userName,
     }));
-    setMessages(data);
+    // 昇順にソート
+    const sortedData = data.sort((a, b) =>
+      isBefore(a.createdAt, b.createdAt) ? -1 : 1
+    );
+    setMessages(sortedData);
 
     const latest = data.find((_, i) => i === 0)?.createdAt;
     firestore
@@ -60,10 +65,10 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
+    // 重複メッセージを削除
     const data = [...messages, ...updateMessages].filter(
       (x, i, self) => self.findIndex((y) => y.id === x.id) === i
     );
-    console.log(data);
     setMessages(data);
   }, [updateMessages]);
 
