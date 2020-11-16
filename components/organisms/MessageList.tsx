@@ -12,7 +12,6 @@ type Props = {
   oldMessages: Message[];
   newMessages: Message[];
   onScrollTop: () => void;
-  // scrollTo?: 'top' | 'end';
 };
 
 const MessageList: React.FC<Props> = ({
