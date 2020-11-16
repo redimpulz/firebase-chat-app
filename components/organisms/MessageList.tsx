@@ -18,16 +18,14 @@ const MessageList: React.FC<Props> = ({ messages }) => {
       messageList.scrollTop = messageList.scrollHeight;
     }
   };
-
   useEffect(() => {
-    console.log('add!!');
     scrollToEnd();
   }, [messages]);
 
   return (
     <>
       <div id={'message-list'}>
-        {messages.map(({ body, createdAt, userName }, i) => (
+        {messages.reverse().map(({ body, createdAt, userName }, i) => (
           <Message date={createdAt} body={body} userName={userName} key={i} />
         ))}
       </div>
