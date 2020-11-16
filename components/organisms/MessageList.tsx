@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Message from '@/components/molecules/Message';
 
 export type Message = {
+  id: string;
   body: string;
   createdAt: Date;
   userName: string;
@@ -18,6 +19,7 @@ const MessageList: React.FC<Props> = ({ messages }) => {
       messageList.scrollTop = messageList.scrollHeight;
     }
   };
+
   useEffect(() => {
     scrollToEnd();
   }, [messages]);
@@ -25,8 +27,8 @@ const MessageList: React.FC<Props> = ({ messages }) => {
   return (
     <>
       <div id={'message-list'}>
-        {messages.reverse().map(({ body, createdAt, userName }, i) => (
-          <Message date={createdAt} body={body} userName={userName} key={i} />
+        {messages.map(({ id, body, createdAt, userName }) => (
+          <Message date={createdAt} body={body} userName={userName} key={id} />
         ))}
       </div>
       <style jsx>{`
