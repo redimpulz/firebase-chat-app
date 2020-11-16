@@ -9,11 +9,11 @@ import marked from 'marked';
 
 import { storage } from '@/lib/firebase';
 
-const MarkDownEditor = ({
-  postAction,
-}: {
+type Props = {
   postAction: (body: string) => void;
-}) => {
+};
+
+const MarkDownEditor: React.FC<Props> = ({ postAction }) => {
   const [value, setValue] = React.useState('');
   const [selectedTab, setSelectedTab] = React.useState<'write' | 'preview'>(
     'write'
