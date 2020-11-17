@@ -1,17 +1,10 @@
 import React, { useEffect } from 'react';
 
-import Message from '@/components/molecules/Message';
-
-export type Message = {
-  id: string;
-  body: string;
-  createdAt: Date;
-  userName: string;
-};
+import Message, { MessageType } from '@/components/molecules/Message';
 
 type Props = {
-  oldMessages: Message[];
-  newMessages: Message[];
+  oldMessages: MessageType[];
+  newMessages: MessageType[];
   onScrollTop: () => void;
 };
 
