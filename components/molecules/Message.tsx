@@ -5,8 +5,14 @@ import ColorHash from 'color-hash';
 
 import * as constants from '@/constants';
 
-import { Message as MessageType } from '@/components/organisms/MessageList';
 import Avatar from '@/components/atoms/Avatar';
+
+export type MessageType = {
+  id: string;
+  body: string;
+  createdAt: Date;
+  userName: string;
+};
 
 type Props = MessageType;
 

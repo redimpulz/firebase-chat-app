@@ -7,9 +7,11 @@ import firebase from 'firebase';
 import { firestore } from '@/lib/firebase';
 import * as constants from '@/constants';
 
+import { MessageType as Message } from '@/components/molecules/Message';
+import Loading from '@/components/molecules/Loading';
+import MarkDownEditor from '@/components/organisms/MarkDownEditor';
+
 import MessageList from '@/components/organisms/MessageList';
-import { Message } from '@/components/organisms/MessageList';
-import MarkDownEditor from '@/components/molecules/MarkDownEditor';
 
 const initPostCount = 20;
 
@@ -26,6 +28,7 @@ const Index = () => {
   const [oldMessages, setOldMessages] = useState<Message[]>([]);
   const [newMessages, setNewMessages] = useState<Message[]>([]);
   const [userName, setUserName] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
     const collection = await firestore
@@ -55,6 +58,7 @@ const Index = () => {
   const moreFetchData = async () => {
     const start = [...oldMessages, ...newMessages].find((_, i) => i === 0);
     if (start) {
+      setLoading(true);
       const doc = await firestore.collection('chat').doc(start.id).get();
       const collection = await firestore
         .collection('chat')
@@ -71,6 +75,7 @@ const Index = () => {
       );
 
       setOldMessages([...sortedData, ...oldMessages]);
+      setLoading(false);
     }
   };
 
@@ -91,6 +96,7 @@ const Index = () => {
   return (
     <>
       <h2>firebase-chat-web</h2>
+      {loading && <Loading />}
       <MessageList
         oldMessages={oldMessages}
         newMessages={newMessages}
