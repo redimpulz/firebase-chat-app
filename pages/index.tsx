@@ -5,6 +5,7 @@ import { isBefore } from 'date-fns';
 import firebase from 'firebase';
 
 import { firestore } from '@/lib/firebase';
+import * as constants from '@/constants';
 
 import MessageList from '@/components/organisms/MessageList';
 import { Message } from '@/components/organisms/MessageList';
@@ -79,7 +80,7 @@ const Index = () => {
     await firestore.collection('chat').add({
       body: body,
       createdAt: new Date(),
-      userName: userName || '名無し',
+      userName: userName || constants.NO_NAME,
     });
   };
 

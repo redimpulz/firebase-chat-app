@@ -1,20 +1,25 @@
 import React from 'react';
 import marked from 'marked';
+import { formatISO9075 } from 'date-fns';
+import ColorHash from 'color-hash';
+
+import * as constants from '@/constants';
+
+import { Message as MessageType } from '@/components/organisms/MessageList';
 import Avatar from '@/components/atoms/Avatar';
 
-import { formatISO9075 } from 'date-fns';
+type Props = MessageType;
 
-type Props = {
-  date: Date;
-  body: string;
-  userName: string;
-};
-
-const Message: React.FC<Props> = ({ date, body, userName }) => {
+const Message: React.FC<Props> = ({ userName, body, createdAt }) => {
+  let bgColor = constants.DEFALUT_BG_COLOR;
+  if (userName != constants.NO_NAME) {
+    const colorHash = new ColorHash();
+    bgColor = colorHash.hex(userName);
+  }
   return (
     <>
       <div className="message">
-        <span className="date">{formatISO9075(date)}</span>
+        <span className="date">{formatISO9075(createdAt)}</span>
         <span className="userName"> {userName}</span>
         <Avatar seed={userName} />
         <br />
@@ -22,10 +27,10 @@ const Message: React.FC<Props> = ({ date, body, userName }) => {
       </div>
       <style jsx>{`
         .date {
-          color: gray;
+          color: white;
         }
         .message {
-          background: #94c2ed;
+          background: ${bgColor};
           border-radius: 5px;
           padding: 5px;
           margin: 5px;

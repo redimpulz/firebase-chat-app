@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+
 import Message from '@/components/molecules/Message';
 
 export type Message = {
@@ -46,8 +47,8 @@ const MessageList: React.FC<Props> = ({
   return (
     <>
       <div id={'message-list'} onScroll={handleScroll}>
-        {messages.map(({ id, body, createdAt, userName }) => (
-          <Message date={createdAt} body={body} userName={userName} key={id} />
+        {messages.map((x) => (
+          <Message key={x.id} {...x} />
         ))}
       </div>
       <style jsx>{`

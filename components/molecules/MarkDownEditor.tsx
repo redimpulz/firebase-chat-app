@@ -1,9 +1,7 @@
 import React from 'react';
 import ReactMde from 'react-mde';
 import 'react-mde/lib/styles/css/react-mde-all.css';
-
 import { Button } from 'antd';
-
 import { v4 } from 'uuid';
 import marked from 'marked';
 

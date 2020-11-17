@@ -5,6 +5,7 @@ import { Avatar as AntAvatar } from 'antd';
 type Props = {
   seed: string;
 };
+
 const Avatar: React.FC<Props> = ({ seed }) => {
   const generator = new AvatarGenerator();
   const avatar = generator.generateRandomAvatar(seed);
