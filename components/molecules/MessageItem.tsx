@@ -7,16 +7,16 @@ import * as constants from '@/constants';
 
 import Avatar from '@/components/atoms/Avatar';
 
-export type MessageType = {
+export type Message = {
   id: string;
   body: string;
   createdAt: Date;
   userName: string;
 };
 
-type Props = MessageType;
+type Props = Message;
 
-const Message: React.FC<Props> = ({ userName, body, createdAt }) => {
+const MessageItem: React.FC<Props> = ({ userName, body, createdAt }) => {
   let bgColor = constants.DEFALUT_BG_COLOR;
   if (userName != constants.NO_NAME) {
     const colorHash = new ColorHash();
@@ -46,4 +46,4 @@ const Message: React.FC<Props> = ({ userName, body, createdAt }) => {
   );
 };
 
-export default Message;
+export default MessageItem;

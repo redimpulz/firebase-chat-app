@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 
-import Message, { MessageType } from '@/components/molecules/Message';
+import MessageItem, { Message } from '@/components/molecules/MessageItem';
 
 type Props = {
-  oldMessages: MessageType[];
-  newMessages: MessageType[];
+  oldMessages: Message[];
+  newMessages: Message[];
   onScrollTop: () => void;
 };
 
@@ -41,7 +41,7 @@ const MessageList: React.FC<Props> = ({
     <>
       <div id={'message-list'} onScroll={handleScroll}>
         {messages.map((x) => (
-          <Message key={x.id} {...x} />
+          <MessageItem key={x.id} {...x} />
         ))}
       </div>
       <style jsx>{`

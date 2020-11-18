@@ -7,7 +7,7 @@ import firebase from 'firebase';
 import { firestore } from '@/lib/firebase';
 import * as constants from '@/constants';
 
-import { MessageType as Message } from '@/components/molecules/Message';
+import { Message } from '@/components/molecules/MessageItem';
 import Loading from '@/components/molecules/Loading';
 import MarkDownEditor from '@/components/organisms/MarkDownEditor';
 
